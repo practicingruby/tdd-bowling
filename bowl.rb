@@ -1,12 +1,16 @@
 class Bowler
   ScoreUnknown = Class.new(StandardError)
+  InvalidThrow = Class.new(StandardError)
 
   def initialize
     @score = 0
+    @last_ball = nil
   end
 
   def throw(ball)
-    if ball == 10
+    if @last_ball && @last_ball + ball == 10
+      @state = :spare
+    elsif ball == 10
       if @last_ball == 0
         @state = :spare
       else
@@ -76,6 +80,12 @@ class BowlerTest < Test::Unit::TestCase
     @bowler.throw(3)
     @bowler.throw(7)
     assert_equal :spare, @bowler.state
+  end
+
+  def test_must_not_knock_down_more_than_10_pins
+    assert_raises(Bowler::InvalidThrow) do
+      @bowler.throw(16)
+    end
   end
 
 end
