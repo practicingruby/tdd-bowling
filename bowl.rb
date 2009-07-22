@@ -7,8 +7,10 @@ class Bowler
     @last_ball = nil
   end
 
+  attr_reader :old_balls
+
   def throw(ball)
-    if ball > 10
+    if ball > 10 || @last_ball.to_i + ball > 10
       raise(InvalidThrow)
     end
     if @last_ball && @last_ball + ball == 10
@@ -96,6 +98,19 @@ class BowlerTest < Test::Unit::TestCase
       @bowler.throw(5)
       @bowler.throw(8)
     end
+  end
+
+  def test_must_keep_track_of_last_two_balls_throw 
+    assert_equal [], @bowler.old_balls
+
+    @bowler.throw(7)
+    assert_equal [7], @bowler.old_balls
+    
+    @bowler.throw(3)
+    assert_equal [7,3], @bowler.old_balls
+
+    @bowler.throw(9)
+    assert_equal [3,9], @bowler.old_balls
   end
 
 end
