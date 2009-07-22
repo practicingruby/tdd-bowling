@@ -50,18 +50,18 @@ class BowlerTest < Test::Unit::TestCase
       @bowler.score
     end
     
-    assert_equal @bowler.state, :spare
+    assert_equal :spare, @bowler.state
   end
   
   def test_must_recognize_strike
     @bowler.throw(10)
-    assert_equal @bowler.state, :strike
+    assert_equal :strike, @bowler.state
   end
 
   def test_must_recognize_second_ball_ten_is_a_spare
     @bowler.throw(0)
     @bowler.throw(10)
-    assert_equal @bowler.state, :spare
+    assert_equal :spare, @bowler.state
   end
 
 end
