@@ -26,6 +26,7 @@ class Bowler
     
     if @state == :spare
       @score += 2 * ball
+      @state = nil
     else
       @score += ball
     end
@@ -48,8 +49,7 @@ class Bowler
   end
 
   def score
-    if @score == 10
-      @state = :spare
+    if @state
       raise(ScoreUnknown)
     else
       @score
@@ -87,8 +87,15 @@ class BowlerTest < Test::Unit::TestCase
     assert_raises(Bowler::ScoreUnknown) do
       @bowler.score
     end
+
+    @bowler.throw(3)
+    @bowler.score
+
+    @bowler.throw(7)
+    assert_raises(Bowler::ScoreUnknown) do
+      @bowler.score
+    end
     
-    assert_equal :spare, @bowler.state
   end
   
   def test_must_recognize_strike
