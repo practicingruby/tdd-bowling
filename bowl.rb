@@ -19,6 +19,7 @@ class Bowler
 
   def score
     if @score == 10
+      @state = :spare
       raise(ScoreUnknown)
     else
       @score
@@ -26,7 +27,7 @@ class Bowler
   end
   
   def state
-    @state || :spare 
+    @state
   end
 
 end
