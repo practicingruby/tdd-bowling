@@ -9,7 +9,17 @@ class Bowler
     @score += ball
   end
 
-  attr_reader :score
+  def score
+    if @score == 10
+      raise(ScoreUnknown)
+    else
+      @score
+    end
+  end
+  
+  def state
+    :spare
+  end
 
 end
 
@@ -40,6 +50,11 @@ class BowlerTest < Test::Unit::TestCase
     end
     
     assert_equal @bowler.state, :spare
+  end
+  
+  def test_must_recognize_strike
+    @bowler.throw(10)
+    assert_equal @bowler.state, :strike
   end
 
 end
