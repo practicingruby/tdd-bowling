@@ -24,6 +24,12 @@ class Bowler
     @old_balls.pop
     @old_balls.unshift(ball)
     
+    if @state == :spare
+      @score += 2 * ball
+    else
+      @score += ball
+    end
+    
     if last_ball && last_ball + ball == 10
       @state = :spare
       @new_frame = true
@@ -39,7 +45,6 @@ class Bowler
       @new_frame = !@new_frame
     end
 
-    @score += ball
   end
 
   def score
@@ -143,5 +148,14 @@ class BowlerTest < Test::Unit::TestCase
     @bowler.throw(9)
     assert_equal 28, @bowler.score
   end
+  
+  def test_should_only_double_one_ball_after_spare
+    @bowler.throw(7)
+    @bowler.throw(3)
+    @bowler.throw(8)
+    @bowler.throw(1)
+    assert_equal 27, @bowler.score
+  end
+
 
 end
