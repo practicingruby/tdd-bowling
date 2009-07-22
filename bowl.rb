@@ -6,6 +6,7 @@ class Bowler
   end
 
   def throw(ball)
+    @state = :strike if ball == 10
     @score += ball
   end
 
@@ -18,7 +19,7 @@ class Bowler
   end
   
   def state
-    :spare
+    @state || :spare 
   end
 
 end
@@ -55,6 +56,12 @@ class BowlerTest < Test::Unit::TestCase
   def test_must_recognize_strike
     @bowler.throw(10)
     assert_equal @bowler.state, :strike
+  end
+
+  def test_must_recognize_second_ball_ten_is_a_spare
+    @bowler.throw(0)
+    @bowler.throw(10)
+    assert_equal @bowler.state, :spare
   end
 
 end
