@@ -5,14 +5,17 @@ class Bowler
   def initialize
     @score = 0
     @last_ball = nil
+    @old_balls = [nil, nil]
   end
-
+  
   attr_reader :old_balls
 
   def throw(ball)
     if ball > 10 || @last_ball.to_i + ball > 10
       raise(InvalidThrow)
     end
+    @old_balls.pop
+    @old_balls.unshift(ball)
     if @last_ball && @last_ball + ball == 10
       @state = :spare
     elsif ball == 10
@@ -101,16 +104,24 @@ class BowlerTest < Test::Unit::TestCase
   end
 
   def test_must_keep_track_of_last_two_balls_throw 
-    assert_equal [], @bowler.old_balls
+    assert_equal [nil, nil], @bowler.old_balls
 
     @bowler.throw(7)
-    assert_equal [7], @bowler.old_balls
+    assert_equal [7, nil], @bowler.old_balls
     
     @bowler.throw(3)
-    assert_equal [7,3], @bowler.old_balls
+    assert_equal [3,7], @bowler.old_balls
 
-    @bowler.throw(9)
-    assert_equal [3,9], @bowler.old_balls
+    @bowler.throw(5)
+    assert_equal [5,3], @bowler.old_balls
+  end
+  
+  def test_must_be_aware_of_frames
+    assert_nothing_raised do
+      @bowler.throw(7)
+      @bowler.throw(3)
+      @bowler.throw(9)
+    end
   end
 
 end
