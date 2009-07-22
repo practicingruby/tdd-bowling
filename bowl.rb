@@ -8,6 +8,9 @@ class Bowler
   end
 
   def throw(ball)
+    if ball > 10
+      raise(InvalidThrow)
+    end
     if @last_ball && @last_ball + ball == 10
       @state = :spare
     elsif ball == 10
@@ -85,6 +88,13 @@ class BowlerTest < Test::Unit::TestCase
   def test_must_not_knock_down_more_than_10_pins
     assert_raises(Bowler::InvalidThrow) do
       @bowler.throw(16)
+    end
+  end
+  
+  def test_must_not_knock_down_more_than_10_in_1_frame
+    assert_raises(Bowler::InvalidThrow) do
+      @bowler.throw(5)
+      @bowler.throw(8)
     end
   end
 
