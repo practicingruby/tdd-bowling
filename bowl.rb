@@ -4,29 +4,42 @@ class Bowler
 
   def initialize
     @score = 0
-    @last_ball = nil
     @old_balls = [nil, nil]
+    @new_frame = true
   end
   
   attr_reader :old_balls
 
   def throw(ball)
-    if ball > 10 || @last_ball.to_i + ball > 10
-      raise(InvalidThrow)
+    last_ball = @old_balls[0]
+
+    if ball > 10
+      raise InvalidThrow
     end
+
+    unless @new_frame || last_ball.to_i + ball <= 10
+      raise InvalidThrow
+    end
+            
     @old_balls.pop
     @old_balls.unshift(ball)
-    if @last_ball && @last_ball + ball == 10
+    
+    if last_ball && last_ball + ball == 10
       @state = :spare
+      @new_frame = true
     elsif ball == 10
-      if @last_ball == 0
+      if last_ball == 0
         @state = :spare
+        @new_frame = true
       else
         @state = :strike
+        @new_frame = true
       end
+    else
+      @new_frame = !@new_frame
     end
+
     @score += ball
-    @last_ball = ball
   end
 
   def score
@@ -122,6 +135,13 @@ class BowlerTest < Test::Unit::TestCase
       @bowler.throw(3)
       @bowler.throw(9)
     end
+  end
+
+  def test_should_be_able_to_score_a_spare
+    @bowler.throw(7)
+    @bowler.throw(3)
+    @bowler.throw(9)
+    assert_equal 28, @bowler.score
   end
 
 end
